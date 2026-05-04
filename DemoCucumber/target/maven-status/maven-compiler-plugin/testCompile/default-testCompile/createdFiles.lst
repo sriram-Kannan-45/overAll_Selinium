@@ -1,0 +1,3 @@
+stepdefinition\loginTest.class
+com\runner\TestNgRunner.class
+com\runner\JuintRunner.class
