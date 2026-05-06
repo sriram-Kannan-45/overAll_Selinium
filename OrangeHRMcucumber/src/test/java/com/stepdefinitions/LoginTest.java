@@ -78,19 +78,19 @@ public class LoginTest {
 
 		
 	}
-	
-	@Then("user enters invlaid credentials and login will be unsuccessfull with")
-	public void user_enters_invlaid_credentials_and_login_will_be_unsuccessfull_with(DataTable dataTable) 
-	
-	{
-	
-		List<Map<String, String>> user = dataTable.asMaps(String.class , String.class);
-		
-		for (Map <String , String > form : user )
-		{
-			userName = form.get("Username");
-		}
-	}
+//	
+//	@Then("user enters invlaid credentials and login will be unsuccessfull with")
+//	public void user_enters_invlaid_credentials_and_login_will_be_unsuccessfull_with(DataTable dataTable) 
+//	
+//	{
+//	
+//		List<Map<String, String>> user = dataTable.asMaps(String.class , String.class);
+//		
+//		for (Map <String , String > form : user )
+//		{
+//			userName = form.get("Username");
+//		}
+//	}
 
 	@Then("user should be able to login successfully and new page open")
 	public void user_should_be_able_to_login_successfully_and_new_page_open() {
