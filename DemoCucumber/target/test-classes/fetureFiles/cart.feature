@@ -1,4 +1,4 @@
-Feature : Add to cart and place order
+Feature: Add to cart and place order
 
 	Scenario: Add the product to the Cart
 	

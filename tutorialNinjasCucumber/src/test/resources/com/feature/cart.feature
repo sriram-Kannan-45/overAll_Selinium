@@ -1,11 +1,15 @@
 Feature: add the items to the cart
 
-description: As a user, I want to be able to add items to my shopping cart so that I can purchase them later.
-  
+  Description:
+  As a user, I want to be able to add items to my shopping cart
+  so that I can purchase them later.
+@cart
   Scenario: add the items to the cart
+
     Given user is on the Account page
-    When user searche "<item>" in a search box 
-    And the user clicks on the "<item>" from the search results
-    And the user clicks on the "Add to Cart" button
-    Then the "<item>" should be see in the cart
-    
+
+    Then user searches for the items and adds to the cart and verifies the items in the cart
+      | itemNameSearch | itemNameCart |
+      | mac            | iMac         |
+      | mac            | MacBook      |
+      | mac            | MacBook Air  |

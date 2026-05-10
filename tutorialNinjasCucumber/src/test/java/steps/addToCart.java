@@ -1,53 +1,126 @@
 package steps;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.util.List;
+import java.util.Map;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
-public class addToCart extends LoginTest
-
+public class addToCart extends BaseClass
 {
-	@Given("user is on the Account page")
-	public void user_is_on_the_account_page() 
-	{
-	    // Write code here that turns the phrase above into concrete actions
-	    login();
-	}
 
-	@When("user searche {string} in a search box")
-	public void user_searche_in_a_search_box(String string)
-	
-	{
-	    // Write code here that turns the phrase above into concrete actions
-	    wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("search"))).sendKeys(string);
-	}
+    @Given("user is on the Account page")
+    public void user_is_on_the_account_page()
+    {
+        setupDriver();
 
-	@When("the user clicks on the {string} from the search results")
-	public void the_user_clicks_on_the_from_the_search_results(String string) 
-	
-	{
-	    // Write code here that turns the phrase above into concrete actions
-	       wait.until(ExpectedConditions.elementToBeClickable(By.linkText(string))).click();
-	}
+        driver.get("https://tutorialsninja.com/demo/");
 
-	@When("the user clicks on the {string} button")
-	public void the_user_clicks_on_the_button(String string) 
-	
-	{
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
-	}
+        wait.until(ExpectedConditions
+                .elementToBeClickable(By.xpath("//span[text()='My Account']")))
+                .click();
 
-	@Then("the {string} should be see in the cart")
-	public void the_should_be_see_in_the_cart(String string) 
-	
-	{
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
-	}
+        wait.until(ExpectedConditions
+                .elementToBeClickable(By.linkText("Login")))
+                .click();
 
+        wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.id("input-email")))
+                .sendKeys("2k22aids46@kiot.ac.in");
 
+        wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.id("input-password")))
+                .sendKeys("sriram123@");
+
+        wait.until(ExpectedConditions
+                .elementToBeClickable(By.xpath("//input[@value='Login']")))
+                .click();
+    }
+
+    @Then("user searches for the items and adds to the cart and verifies the items in the cart")
+    public void user_searches_for_the_items_and_adds_to_the_cart_and_verifies_the_items_in_the_cart(DataTable dataTable)
+    {
+
+        List<Map<String, String>> items =
+                dataTable.asMaps(String.class, String.class);
+
+        int i = 1;
+
+        for (Map<String, String> item : items)
+        {
+
+            String productName = item.get("itemNameSearch");
+
+            String expectedCartItem = item.get("itemNameCart");
+
+            WebElement searchBox =
+                    wait.until(ExpectedConditions
+                            .visibilityOfElementLocated(By.name("search")));
+
+            searchBox.clear();
+
+            searchBox.sendKeys(productName, Keys.ENTER);
+
+            List<WebElement> products =
+                    wait.until(ExpectedConditions
+                            .visibilityOfAllElementsLocatedBy(
+                                    By.xpath("//div[@class='product-thumb']")));
+
+            for (int j = 0; j < products.size(); j++)
+            {
+
+                products =
+                        wait.until(ExpectedConditions
+                                .visibilityOfAllElementsLocatedBy(
+                                        By.xpath("//div[@class='product-thumb']")));
+
+                WebElement product = products.get(j);
+
+                String actualProduct =
+                        product.findElement(By.xpath(".//h4/a"))
+                                .getText();
+
+                if (actualProduct.equalsIgnoreCase(expectedCartItem))
+                {
+
+                    product.findElement(By.xpath(".//h4/a")).click();
+
+                    wait.until(ExpectedConditions
+                            .elementToBeClickable(By.id("button-cart")))
+                            .click();
+
+                    String actualMessage =
+                            wait.until(ExpectedConditions
+                                    .visibilityOfElementLocated(
+                                            By.cssSelector(".alert-success")))
+                                    .getText();
+
+                    Assert.assertTrue(
+                            actualMessage.contains(
+                                    "Success: You have added " +
+                                            expectedCartItem +
+                                            " to your shopping cart!"
+                            )
+                    );
+
+                    System.out.println(i++ + " : "
+                            + expectedCartItem
+                            + " Added Successfully");
+
+                    driver.navigate().back();
+
+                    break;
+                }
+                            
+                
+            }
+        }
+    }
 }
